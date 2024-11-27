@@ -1,0 +1,40 @@
+import React, { forwardRef } from "react";
+import * as Styled from "./playerlist.styles";
+import { useDrag } from "react-dnd";
+
+export interface IListItem {
+  name: string;
+  lastName: string;
+  id: number;
+  playerNumber: number;
+  img: string;
+  position: string;
+}
+
+const ListItem = forwardRef<HTMLDivElement, IListItem>(
+  ({ name, lastName, id, playerNumber, img, position }: IListItem) => {
+    const [{ isDragging }, drag] = useDrag(() => ({
+      type: "player",
+      item: { id, name, lastName, playerNumber, img, position, isFirst: true },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: (_, monitor) => {
+        if (monitor.didDrop()) {
+          //
+        }
+      },
+    }));
+
+    return (
+      <Styled.ListItemEl ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+        <Styled.DecorStripe position={position} />
+        <Styled.ItemNumber>{playerNumber}</Styled.ItemNumber>
+        <img src={img} alt={lastName} />
+        <Styled.ItemName>{`${name} ${lastName}`}</Styled.ItemName>
+      </Styled.ListItemEl>
+    );
+  }
+);
+
+export default ListItem;
