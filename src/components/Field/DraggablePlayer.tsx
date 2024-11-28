@@ -9,12 +9,11 @@ interface IDraggablePlayer {
 }
 
 const DraggablePlayer = ({ data, handleClickDelete }: IDraggablePlayer) => {
-  const [{}, drag] = useDrag(() => ({
+  const [_, drag] = useDrag(() => ({
     type: "player",
-    item: { ...data },
+    item: data,
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
-      info: monitor.getItem(),
     }),
     canDrag(monitor) {
       return !!data;

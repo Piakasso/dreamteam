@@ -1,7 +1,8 @@
 import React from "react";
-import * as Styled from "./field.styles";
-import { useDrag, useDrop } from "react-dnd";
+import { useDrop } from "react-dnd";
 import { IPlayer, IPosition } from "../../data/constants";
+
+import * as Styled from "./field.styles";
 import DraggablePlayer from "./DraggablePlayer";
 
 interface IFieldItem {
@@ -16,6 +17,7 @@ interface IFieldItem {
   id?: number;
   data: IPosition;
   handleDeletePlayer: (player: IPlayer, fieldId: number) => void;
+  handleSwitchPlayer: (prevPosition: IPosition, newPosition: IPosition) => void;
 }
 
 interface IState extends IPlayer {
@@ -28,16 +30,27 @@ const FieldItem = (props: IFieldItem) => {
     handleChoosePlayer,
     data,
     handleDeletePlayer,
+    handleSwitchPlayer,
   } = props;
 
   const [{ canDrop }, drop] = useDrop(() => ({
     accept: "player",
+    drop: (item: any) => {
+      const { id, name, lastName, playerNumber, img, position, isFirst } = item;
+      if (isFirst) {
+        const player = {
+          id,
+          name,
+          lastName,
+          playerNumber,
+          img,
+          position,
+        };
 
-    drop: (item: IState) => {
-      if (item.isFirst) {
-        handleChangePlayersList(item);
-        handleChoosePlayer({ newPlayer: item, fieldId: data.fieldId });
+        handleChangePlayersList(player);
+        handleChoosePlayer({ newPlayer: player, fieldId: data.fieldId });
       } else {
+        handleSwitchPlayer(item, data);
       }
     },
     canDrop: (item: IState) => {
@@ -70,7 +83,7 @@ const FieldItem = (props: IFieldItem) => {
         top: `${data.yCoord}%`,
         backgroundColor: canDrop ? "grey" : "",
       }}
-      ref={drop}
+      ref={!data.lastName ? drop : null}
     >
       {!data.lastName ? (
         data.fieldId

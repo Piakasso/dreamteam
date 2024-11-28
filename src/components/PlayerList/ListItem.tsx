@@ -1,6 +1,7 @@
 import React, { forwardRef } from "react";
-import * as Styled from "./playerlist.styles";
 import { useDrag } from "react-dnd";
+
+import * as Styled from "./playerlist.styles";
 
 export interface IListItem {
   name: string;
@@ -25,7 +26,7 @@ const ListItem = forwardRef<HTMLDivElement, IListItem>(
       <Styled.ListItemEl
         ref={drag}
         style={{
-          opacity: isDragging ? 0.5 : 1,
+          opacity: isDragging ? 0.7 : 1,
         }}
       >
         <Styled.DecorStripe position={position} />
