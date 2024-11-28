@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import ListItem, { IListItem } from "./ListItem";
+import React from "react";
+import ListItem from "./ListItem";
 import { PlayerListEl } from "./playerlist.styles";
 import { IPlayer } from "../../data/constants";
 

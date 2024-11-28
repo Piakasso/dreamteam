@@ -12,22 +12,22 @@ export interface IListItem {
 }
 
 const ListItem = forwardRef<HTMLDivElement, IListItem>(
-  ({ name, lastName, id, playerNumber, img, position }: IListItem) => {
+  ({ name, lastName, id, playerNumber, img, position }: IListItem, ref) => {
     const [{ isDragging }, drag] = useDrag(() => ({
       type: "player",
       item: { id, name, lastName, playerNumber, img, position, isFirst: true },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      end: (_, monitor) => {
-        if (monitor.didDrop()) {
-          //
-        }
-      },
     }));
 
     return (
-      <Styled.ListItemEl ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <Styled.ListItemEl
+        ref={drag}
+        style={{
+          opacity: isDragging ? 0.5 : 1,
+        }}
+      >
         <Styled.DecorStripe position={position} />
         <Styled.ItemNumber>{playerNumber}</Styled.ItemNumber>
         <img src={img} alt={lastName} />

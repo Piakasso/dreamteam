@@ -1,97 +1,83 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import * as Styled from "./field.styles";
 import { useDrag, useDrop } from "react-dnd";
 import { IPlayer, IPosition } from "../../data/constants";
+import DraggablePlayer from "./DraggablePlayer";
 
 interface IFieldItem {
   handleChangePlayersList: (item: IPlayer) => void;
-  handleChangeFieldPlayers: ({
+  handleChoosePlayer: ({
     newPlayer,
     fieldId,
-    prevFieldId,
   }: {
-    newPlayer?: IPlayer;
-    prevFieldId?: number;
-    fieldId?: number;
+    newPlayer: IPlayer;
+    fieldId: number;
   }) => void;
   id?: number;
   data: IPosition;
+  handleDeletePlayer: (player: IPlayer, fieldId: number) => void;
 }
 
 interface IState extends IPlayer {
   isFirst?: boolean;
 }
 
-const FieldItem = ({
-  handleChangePlayersList,
-  handleChangeFieldPlayers,
-  data,
-}: IFieldItem) => {
-  const [{ isOver, canDrop, hz, tr }, drop] = useDrop(() => ({
+const FieldItem = (props: IFieldItem) => {
+  const {
+    handleChangePlayersList,
+    handleChoosePlayer,
+    data,
+    handleDeletePlayer,
+  } = props;
+
+  const [{ canDrop }, drop] = useDrop(() => ({
     accept: "player",
 
     drop: (item: IState) => {
       if (item.isFirst) {
         handleChangePlayersList(item);
-        handleChangeFieldPlayers({ newPlayer: item, fieldId: data.fieldId });
+        handleChoosePlayer({ newPlayer: item, fieldId: data.fieldId });
       } else {
-        console.log(item, "new");
-        console.log(data, "data");
-        // handleChangeFieldPlayers({
-        //   newPlayer: item,
-        //   fieldId: data.fieldId,
-        // });
       }
+    },
+    canDrop: (item: IState) => {
+      return data.position === item.position;
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
-      hz: monitor.getItem(),
-      tr: monitor.getHandlerId(),
     }),
   }));
-  //   console.log("data is changed", data);
-  const [{ isDragging, info }, drag] = useDrag(() => ({
-    type: "player",
-    item: data,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-      info: monitor.getDropResult(),
-    }),
-    end: (_, monitor) => {
-      if (monitor.didDrop()) {
-      }
-    },
-  }));
 
-  useEffect(() => {
-    console.log(tr);
-  }, [tr]);
+  const handleClickDelete = () => {
+    handleDeletePlayer(
+      {
+        lastName: data.lastName || "",
+        name: data.name || "",
+        id: data.id || 0,
+        img: data.img || "",
+        playerNumber: data.playerNumber || 0,
+        position: data.position,
+      },
+      data.fieldId
+    );
+  };
 
-  return !data.lastName ? (
+  return (
     <Styled.EmptyPosition
       style={{
         left: `${data.xCoord}%`,
         top: `${data.yCoord}%`,
+        backgroundColor: canDrop ? "grey" : "",
       }}
       ref={drop}
     >
-      {data.fieldId}
+      {!data.lastName ? (
+        data.fieldId
+      ) : (
+        <DraggablePlayer data={data} handleClickDelete={handleClickDelete} />
+      )}
     </Styled.EmptyPosition>
-  ) : (
-    <Styled.ChoosedRole
-      style={{
-        left: `${data.xCoord}%`,
-        top: `${data.yCoord}%`,
-      }}
-      ref={drag}
-    >
-      <img src={data.img} alt={data.lastName} />
-      <Styled.FieldPlayerName>
-        {data.name ? `${data.name[0]}.${data.lastName}` : data.lastName}
-      </Styled.FieldPlayerName>
-      <Styled.FieldPlayerNumber>{data.playerNumber}</Styled.FieldPlayerNumber>
-    </Styled.ChoosedRole>
   );
 };
 

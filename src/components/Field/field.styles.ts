@@ -13,6 +13,21 @@ export const FieldWrapper = styled.div`
     opacity: 0.8;
   }
 `;
+export const DeleteButton = styled.button`
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  background-color: red;
+  color: white;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+`;
 
 export const FieldBg = styled.img`
   width: auto;
@@ -40,8 +55,8 @@ export const EmptyPosition = styled.div`
 
 export const ChoosedRole = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 72%;
+  left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,6 +72,10 @@ export const ChoosedRole = styled.div`
     background-color: white;
     border-radius: 50%;
     border: 2px white solid;
+  }
+
+  &:hover ${DeleteButton} {
+    display: flex;
   }
 `;
 
