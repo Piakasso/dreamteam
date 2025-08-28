@@ -1,5 +1,7 @@
 # Общие сведения
 
+Выполнено в рамках тестового задания. [https://piakasso.github.io/dreamteam/](https://piakasso.github.io/dreamteam/)
+
 ## Установка и подготовка
 
 установите пакеты зависимости
